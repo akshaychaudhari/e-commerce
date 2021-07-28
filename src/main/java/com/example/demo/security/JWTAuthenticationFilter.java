@@ -1,7 +1,7 @@
 package com.example.demo.security;
 
 import com.auth0.jwt.JWT;
-import com.example.demo.model.persistence.User;
+import com.example.demo.model.persistence.entities.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
