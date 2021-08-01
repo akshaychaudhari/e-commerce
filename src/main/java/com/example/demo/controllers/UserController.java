@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -39,6 +41,16 @@ public class UserController {
 
     /*
      * Method to get the given user details by username.
+     * */
+    @GetMapping("/")
+    public ResponseEntity<List<User>> findAllUsers() {
+        logger.debug("Getting all users ");
+        List<User> users = userRepository.findAll();
+        return users.isEmpty()  ? ResponseEntity.notFound().build() : ResponseEntity.ok(users);
+    }
+
+    /*
+     * Method to get all given user details.
      * */
     @GetMapping("/{username}")
     public ResponseEntity<User> findByUserName(@PathVariable String username) {

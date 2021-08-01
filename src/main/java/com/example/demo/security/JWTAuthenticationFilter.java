@@ -3,6 +3,8 @@ package com.example.demo.security;
 import com.auth0.jwt.JWT;
 import com.example.demo.model.persistence.entities.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,6 +25,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 	 private AuthenticationManager authenticationManager;
 
+    private static final Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
+
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
@@ -33,7 +37,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     	try {
     		User credentials = new ObjectMapper()
                     .readValue(req.getInputStream(), User.class);
-    		
+
+    		logger.debug("Authentication attempt for user "+ credentials.getUsername());
     		return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             credentials.getUsername(),
@@ -55,5 +60,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
                 .sign(HMAC512(SecurityConstants.SECRET.getBytes()));
         res.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
+        logger.debug("Auth Success for user " + ((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername() + " JWT token is " + SecurityConstants.TOKEN_PREFIX + token );
     }
 }

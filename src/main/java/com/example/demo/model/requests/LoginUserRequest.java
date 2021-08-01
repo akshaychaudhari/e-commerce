@@ -2,24 +2,19 @@ package com.example.demo.model.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CreateUserRequest {
-
+public class LoginUserRequest {
     @JsonProperty
     private String username;
 
     @JsonProperty
     private String password;
 
-    @JsonProperty
-    private String confirmPassword;
-
-    public CreateUserRequest() {
+    public LoginUserRequest() {
     }
 
-    public CreateUserRequest(String username, String password, String confirmPassword) {
+    public LoginUserRequest(String username, String password) {
         this.username = username;
         this.password = password;
-        this.confirmPassword = confirmPassword;
     }
 
     public String getUsername() {
@@ -34,15 +29,8 @@ public class CreateUserRequest {
         this.password = password;
     }
 
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
-
     public String getPassword() {
         return password;
     }
 
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
 }

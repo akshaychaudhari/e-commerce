@@ -22,7 +22,10 @@ public class JWTAuthenticationVerficationFilter extends BasicAuthenticationFilte
 	public JWTAuthenticationVerficationFilter(AuthenticationManager authManager) {
         super(authManager);
     }
-	
+
+    /*
+    * Internal filter function
+    * */
 	@Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) 
     		throws IOException, ServletException {
