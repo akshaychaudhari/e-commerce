@@ -6,10 +6,7 @@ import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.model.persistence.entities.Cart;
 import com.example.demo.model.persistence.entities.Item;
@@ -32,6 +29,9 @@ public class CartController {
     @Autowired
     private ItemRepository itemRepository;
 
+    /*
+    * Method to add new items to the logged-in user's cart.
+    * */
     @PostMapping("/addToCart")
     public ResponseEntity<Cart> addTocart(@RequestBody ModifyCartRequest request) {
         User user = userRepository.findByUsername(request.getUsername());
@@ -49,6 +49,9 @@ public class CartController {
         return ResponseEntity.ok(cart);
     }
 
+    /*
+     * Method to remove the items from the logged-in user's cart.
+     * */
     @PostMapping("/removeFromCart")
     public ResponseEntity<Cart> removeFromcart(@RequestBody ModifyCartRequest request) {
         User user = userRepository.findByUsername(request.getUsername());
@@ -63,6 +66,25 @@ public class CartController {
         IntStream.range(0, request.getQuantity())
                 .forEach(i -> cart.removeItem(item.get()));
         cartRepository.save(cart);
+        return ResponseEntity.ok(cart);
+    }
+
+    /*
+     * Method to get the items list from the logged-in user's cart.
+     * */
+    @GetMapping("/getCartDetails/{userName}")
+    public ResponseEntity<Cart> getCartDetails(@PathVariable String userName) {
+        User user = userRepository.findByUsername(userName);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        Cart cart = cartRepository.findByUser(user);
+
+        if (cart == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
         return ResponseEntity.ok(cart);
     }
 

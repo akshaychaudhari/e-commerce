@@ -73,6 +73,9 @@ public class UserOrder {
 		this.total = total;
 	}
 
+	/*
+	* Method to create an Order from given cart
+	* */
 	public static UserOrder createFromCart(Cart cart) {
 		UserOrder order = new UserOrder();
 		order.setItems(cart.getItems().stream().collect(Collectors.toList()));

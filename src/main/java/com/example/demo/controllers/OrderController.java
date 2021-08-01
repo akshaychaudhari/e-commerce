@@ -18,32 +18,35 @@ import com.example.demo.model.persistence.repositories.UserRepository;
 @RestController
 @RequestMapping("/api/order")
 public class OrderController {
-	
-	
-	@Autowired
-	private UserRepository userRepository;
-	
-	@Autowired
-	private OrderRepository orderRepository;
-	
-	
-	@PostMapping("/submit/{username}")
-	public ResponseEntity<UserOrder> submit(@PathVariable String username) {
-		User user = userRepository.findByUsername(username);
-		if(user == null) {
-			return ResponseEntity.notFound().build();
-		}
-		UserOrder order = UserOrder.createFromCart(user.getCart());
-		orderRepository.save(order);
-		return ResponseEntity.ok(order);
-	}
-	
-	@GetMapping("/history/{username}")
-	public ResponseEntity<List<UserOrder>> getOrdersForUser(@PathVariable String username) {
-		User user = userRepository.findByUsername(username);
-		if(user == null) {
-			return ResponseEntity.notFound().build();
-		}
-		return ResponseEntity.ok(orderRepository.findByUser(user));
-	}
+
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    /*
+     * Method to submit order for logged-in user's cart.
+     * */
+    @PostMapping("/submit/{username}")
+    public ResponseEntity<UserOrder> submit(@PathVariable String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) return ResponseEntity.notFound().build();
+
+        UserOrder order = UserOrder.createFromCart(user.getCart());
+        orderRepository.save(order);
+        return ResponseEntity.ok(order);
+    }
+
+    /*
+     * Method to get the logged-in user's order history.
+     * */
+    @GetMapping("/history/{username}")
+    public ResponseEntity<List<UserOrder>> getOrdersForUser(@PathVariable String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(orderRepository.findByUser(user));
+    }
 }

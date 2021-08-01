@@ -69,7 +69,10 @@ public class Cart {
 	public void setItems(List<Item> items) {
 		this.items = items;
 	}
-	
+
+	/*
+	 * Add new item and keep the total updated.
+	 * */
 	public void addItem(Item item) {
 		if(items == null) {
 			items = new ArrayList<>();
@@ -80,7 +83,10 @@ public class Cart {
 		}
 		total = total.add(item.getPrice());
 	}
-	
+
+	/*
+	 * Add the given item and keep the total updated.
+	 * */
 	public void removeItem(Item item) {
 		if(items == null) {
 			items = new ArrayList<>();
