@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.ECommerceApplication;
+import com.example.demo.exceptionHandlers.UserAlreadyExistsException;
 import com.example.demo.model.persistence.entities.Cart;
 import com.example.demo.model.persistence.entities.User;
 import com.example.demo.model.persistence.repositories.CartRepository;
@@ -46,7 +47,7 @@ public class UserController {
     public ResponseEntity<List<User>> findAllUsers() {
         logger.debug("Getting all users ");
         List<User> users = userRepository.findAll();
-        return users.isEmpty()  ? ResponseEntity.notFound().build() : ResponseEntity.ok(users);
+        return users.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(users);
     }
 
     /*
@@ -54,7 +55,7 @@ public class UserController {
      * */
     @GetMapping("/{username}")
     public ResponseEntity<User> findByUserName(@PathVariable String username) {
-        logger.debug("Getting user by name "+ username);
+        logger.debug("Getting user by name " + username);
         User user = userRepository.findByUsername(username);
         return user == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(user);
     }
@@ -64,6 +65,12 @@ public class UserController {
      * */
     @PostMapping("/create")
     public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
+
+        User checkUser = userRepository.findByUsername(createUserRequest.getUsername());
+        if (checkUser != null) {
+            logger.debug("User Creation failed for user " + createUserRequest.getUsername());
+            throw new UserAlreadyExistsException();
+        }
         logger.debug("Creating new user" + createUserRequest.getUsername());
         User user = new User();
         user.setUsername(createUserRequest.getUsername());
@@ -79,7 +86,7 @@ public class UserController {
         logger.debug("Encoding password for user " + createUserRequest.getUsername());
         user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
         userRepository.save(user);
-        logger.debug("Added user " + createUserRequest.getUsername());
+        logger.debug("User Creation successful for user " + createUserRequest.getUsername());
         return ResponseEntity.ok(user);
     }
 

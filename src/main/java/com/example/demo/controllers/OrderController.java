@@ -34,12 +34,15 @@ public class OrderController {
      * */
     @PostMapping("/submit/{username}")
     public ResponseEntity<UserOrder> submit(@PathVariable String username) {
-        logger.debug("Submitting Order for user "+ username);
+        logger.debug("Submitting Order for user " + username);
         User user = userRepository.findByUsername(username);
-        if (user == null) return ResponseEntity.notFound().build();
-
+        if (user == null) {
+            logger.debug("Order request failed for user " + username);
+            return ResponseEntity.notFound().build();
+        }
         UserOrder order = UserOrder.createFromCart(user.getCart());
         orderRepository.save(order);
+        logger.debug("Order request successful for user " + username);
         return ResponseEntity.ok(order);
     }
 
@@ -48,7 +51,7 @@ public class OrderController {
      * */
     @GetMapping("/history/{username}")
     public ResponseEntity<List<UserOrder>> getOrdersForUser(@PathVariable String username) {
-        logger.debug("Getting Order history for user "+ username);
+        logger.debug("Getting Order history for user " + username);
         User user = userRepository.findByUsername(username);
         if (user == null) return ResponseEntity.notFound().build();
 
