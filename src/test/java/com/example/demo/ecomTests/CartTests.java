@@ -20,10 +20,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Objects;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -112,5 +114,28 @@ public class CartTests {
                                 .content(mapper.writeValueAsString(body))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getCartDetailsForUser() throws Exception {
+        ModifyCartRequest body = new ModifyCartRequest();
+        mvc.perform(
+                        get("/api/cart/getCartDetails/".concat(USERNAME))
+                                .headers(httpHeaders)
+                                .content(mapper.writeValueAsString(body))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.user.username").value(USERNAME))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getCartDetailsForInvalidUser() throws Exception {
+        ModifyCartRequest body = new ModifyCartRequest();
+        mvc.perform(
+                        get("/api/cart/getCartDetails/".concat("INVALID_USER"))
+                                .headers(httpHeaders)
+                                .content(mapper.writeValueAsString(body))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
