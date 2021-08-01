@@ -3,6 +3,8 @@ package com.example.demo.controllers;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,8 @@ import com.example.demo.model.requests.ModifyCartRequest;
 @RequestMapping("/api/cart")
 public class CartController {
 
+    private static final Logger logger = LoggerFactory.getLogger(CartController.class);
+
     @Autowired
     private UserRepository userRepository;
 
@@ -30,10 +34,11 @@ public class CartController {
     private ItemRepository itemRepository;
 
     /*
-    * Method to add new items to the logged-in user's cart.
-    * */
+     * Method to add new items to the logged-in user's cart.
+     * */
     @PostMapping("/addToCart")
     public ResponseEntity<Cart> addTocart(@RequestBody ModifyCartRequest request) {
+        logger.debug("Adding items to Cart for user " + request.getUsername());
         User user = userRepository.findByUsername(request.getUsername());
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -54,6 +59,7 @@ public class CartController {
      * */
     @PostMapping("/removeFromCart")
     public ResponseEntity<Cart> removeFromcart(@RequestBody ModifyCartRequest request) {
+        logger.debug("Removing items from Cart for user " + request.getUsername());
         User user = userRepository.findByUsername(request.getUsername());
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -74,6 +80,7 @@ public class CartController {
      * */
     @GetMapping("/getCartDetails/{userName}")
     public ResponseEntity<Cart> getCartDetails(@PathVariable String userName) {
+        logger.debug("Getting items from Cart for user " + userName);
         User user = userRepository.findByUsername(userName);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -33,6 +33,7 @@ public class UserController {
      * */
     @GetMapping("/id/{id}")
     public ResponseEntity<User> findById(@PathVariable Long id) {
+        logger.debug("Getting user by Id " + id);
         return ResponseEntity.of(userRepository.findById(id));
     }
 
@@ -41,6 +42,7 @@ public class UserController {
      * */
     @GetMapping("/{username}")
     public ResponseEntity<User> findByUserName(@PathVariable String username) {
+        logger.debug("Getting user by name "+ username);
         User user = userRepository.findByUsername(username);
         return user == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(user);
     }
@@ -65,6 +67,7 @@ public class UserController {
         logger.debug("Encoding password for user " + createUserRequest.getUsername());
         user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
         userRepository.save(user);
+        logger.debug("Added user " + createUserRequest.getUsername());
         return ResponseEntity.ok(user);
     }
 
