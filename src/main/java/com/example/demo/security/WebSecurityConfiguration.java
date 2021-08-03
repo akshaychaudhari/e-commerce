@@ -69,7 +69,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.parentAuthenticationManager(authenticationManagerBean())
+        auth/*.parentAuthenticationManager(authenticationManagerBean())*/
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(bCryptPasswordEncoder);
     }
